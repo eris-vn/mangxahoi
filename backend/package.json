@@ -1,0 +1,19 @@
+{
+  "name": "back-end",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.19.1",
+    "bcryptjs": "^2.4.3",
+    "hono": "^4.6.1",
+    "mongoose": "^8.6.2",
+    "prisma": "^5.19.1",
+    "prisma-extension-pagination": "^0.7.4"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/bun": "latest"
+  }
+}
