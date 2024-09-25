@@ -7,4 +7,7 @@ app.route("/auth", authController);
 
 app.get("/", (c) => c.text("Hello Bun!!!!"));
 
-export default app;
+export default {
+  port: 4000,
+  fetch: app.fetch,
+};
