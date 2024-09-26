@@ -1,8 +1,8 @@
 <template>
   <div class="mx-auto w-full xl:w-9/12">
-    <div class="bg-white rounded-md p-4 pt-3 shadow-sm">
+    <div class="bg-white rounded-md p-6 shadow-sm">
       <div class="font-semibold text-xl">Bạn bè</div>
-      <div class="grid grid-cols-12 gap-4 mt-5">
+      <div class="grid grid-cols-12 gap-5 mt-5">
         <div
           class="col-span-4 p-3 border rounded-md flex justify-between"
           v-for="i in 9"
