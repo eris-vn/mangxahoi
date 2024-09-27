@@ -17,6 +17,7 @@
     "axios": "^1.7.7",
     "nuxt": "^3.13.0",
     "primevue": "^4.0.7",
+    "sass": "^1.79.3",
     "vue": "latest",
     "vue-router": "latest"
   },

@@ -14,9 +14,9 @@ datasource db {
 }
 
 model Users {
-  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
   name           String
-  email          String      @unique
+  email          String         @unique
   password       String
   gender         String
   profilePicture String?
@@ -24,11 +24,14 @@ model Users {
   posts          Posts[]
   comments       Comments[]
   likes          Likes[]
-  followers      Followers[] @relation("UserFollowers")
-  following      Followers[] @relation("UserFollowing")
-  friends        Friends[]   @relation("UserFriends")
-  friendOf       Friends[]   @relation("UserFriendsFriend")
+  followers      Followers[]    @relation("UserFollowers")
+  following      Followers[]    @relation("UserFollowing")
+  friends        Friends[]      @relation("UserFriends")
+  friendOf       Friends[]      @relation("UserFriendsFriend")
   Friends        Friends[]
+  Groups         Groups[]
+  GroupMembers   GroupMembers[]
+  GroupPosts     GroupPosts[]
 }
 
 model Posts {
@@ -42,21 +45,25 @@ model Posts {
 }
 
 model Comments {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  content   String
-  createdAt DateTime @default(now())
-  author    Users    @relation(fields: [authorId], references: [id])
-  authorId  String   @db.ObjectId
-  post      Posts    @relation(fields: [postId], references: [id])
-  postId    String   @db.ObjectId
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  content      String
+  createdAt    DateTime    @default(now())
+  author       Users       @relation(fields: [authorId], references: [id])
+  authorId     String      @db.ObjectId
+  post         Posts       @relation(fields: [postId], references: [id])
+  postId       String      @db.ObjectId
+  GroupPosts   GroupPosts? @relation(fields: [groupPostsId], references: [id])
+  groupPostsId String?     @db.ObjectId
 }
 
 model Likes {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  user   Users  @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
-  post   Posts  @relation(fields: [postId], references: [id])
-  postId String @db.ObjectId
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  user         Users       @relation(fields: [userId], references: [id])
+  userId       String      @db.ObjectId
+  post         Posts       @relation(fields: [postId], references: [id])
+  postId       String      @db.ObjectId
+  GroupPosts   GroupPosts? @relation(fields: [groupPostsId], references: [id])
+  groupPostsId String?     @db.ObjectId
 }
 
 model Followers {
@@ -76,4 +83,37 @@ model Friends {
   createdAt DateTime @default(now())
   Users     Users?   @relation(fields: [usersId], references: [id])
   usersId   String?  @db.ObjectId
+}
+
+model Groups {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  createdAt   DateTime       @default(now())
+  owner       Users          @relation(fields: [ownerId], references: [id])
+  ownerId     String         @db.ObjectId
+  members     GroupMembers[]
+  posts       GroupPosts[]
+}
+
+model GroupMembers {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  group    Groups   @relation(fields: [groupId], references: [id])
+  groupId  String   @db.ObjectId
+  user     Users    @relation(fields: [userId], references: [id])
+  userId   String   @db.ObjectId
+  role     String // Example: 'admin', 'member'
+  joinedAt DateTime @default(now())
+}
+
+model GroupPosts {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  createdAt DateTime   @default(now())
+  group     Groups     @relation(fields: [groupId], references: [id])
+  groupId   String     @db.ObjectId
+  author    Users      @relation(fields: [authorId], references: [id])
+  authorId  String     @db.ObjectId
+  comments  Comments[]
+  likes     Likes[]
 }

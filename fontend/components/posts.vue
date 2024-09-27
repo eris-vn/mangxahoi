@@ -112,10 +112,10 @@
       </div>
     </div>
     <!-- Posts Action -->
-    <div class="mt-3 flex gap-3">
+    <div class="mt-3 grid grid-cols-3 gap-3">
       <!-- Like -->
       <div
-        class="bg-gray-100 rounded-lg p-1 px-2 w-fit flex gap-1 border border-gray-200 cursor-pointer"
+        class="bg-gray-100 hover:bg-gray-200 transition duration-150 ease-in-out rounded-sm p-1 px-2 flex gap-1 border border-gray-200 hover:border-gray-300 cursor-pointer text-base items-center justify-center"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +134,7 @@
 
       <!-- Comment -->
       <div
-        class="bg-gray-100 rounded-lg p-1 px-2 w-fit flex gap-1 border border-gray-200 cursor-pointer"
+        class="bg-gray-100 hover:bg-gray-200 transition duration-150 ease-in-out rounded-sm p-1 px-2 flex gap-1 border border-gray-200 hover:border-gray-300 cursor-pointer text-base items-center justify-center"
         @click="visibleDialog = true"
       >
         <svg
@@ -152,7 +152,7 @@
 
       <!-- Share -->
       <div
-        class="bg-gray-100 rounded-lg p-1 px-2 w-fit flex gap-1 border border-gray-200 cursor-pointer"
+        class="bg-gray-100 hover:bg-gray-200 transition duration-150 ease-in-out rounded-sm p-1 px-2 flex gap-1 border border-gray-200 hover:border-gray-300 cursor-pointer text-base items-center justify-center"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -185,11 +185,12 @@
       :show-header="false"
       :pt="{
         root: 'pt-4',
+        content: 'pb-0',
       }"
-      :style="{ width: '45rem' }"
+      :style="{ width: '46rem' }"
     >
       <!-- Posts Header -->
-      <div class="flex justify-between items-center">
+      <div class="flex justify-between items-center sticky top-0 bg-white pb-3">
         <div class="flex gap-3">
           <img
             class="h-11 w-11 object-cover rounded-full border"
@@ -246,7 +247,7 @@
 
         <div
           v-if="actionVisible"
-          class="absolute right-4 top-14 mt-2 w-[15rem] bg-white border border-gray-200 rounded-lg shadow-md p-2"
+          class="absolute right-12 top-10 mt-2 w-[15rem] bg-white border border-gray-200 rounded-lg shadow-md p-2"
         >
           <div class="flex flex-col gap-1">
             <div
@@ -304,7 +305,7 @@
         </div>
       </div>
       <!-- Posts Title -->
-      <h3 class="mt-3">New Update!</h3>
+      <h3>New Update!</h3>
       <!-- Posts Image -->
       <div class="mt-3">
         <img
@@ -325,7 +326,7 @@
       <div class="mt-3 flex gap-3">
         <!-- Like -->
         <div
-          class="bg-gray-100 rounded-lg p-1 px-2 w-fit flex gap-1 border border-gray-200 cursor-pointer"
+          class="bg-gray-100 hover:bg-gray-200 rounded-lg p-1 px-2 w-fit flex gap-1 border border-gray-200 cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -474,6 +475,16 @@
           </div>
         </div>
       </div>
+
+      <!-- Comment Box Sticky -->
+      <div class="sticky bottom-0 bg-white p-4 px-0 flex flex-col gap-3">
+        <Editor editorStyle="height: 50px" />
+        <button
+          class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        >
+          Gửi
+        </button>
+      </div>
     </Dialog>
 
     <Popover ref="sortBy" :base-z-index="100">
@@ -549,4 +560,8 @@ const toggleSortBy = (event: any) => {
 };
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.pb-0 {
+  padding-bottom: 0px !important;
+}
+</style>
