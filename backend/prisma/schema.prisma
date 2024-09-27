@@ -14,24 +14,28 @@ datasource db {
 }
 
 model Users {
-  id             String         @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  email          String         @unique
-  password       String
-  gender         String
-  profilePicture String?
-  bio            String?
-  posts          Posts[]
-  comments       Comments[]
-  likes          Likes[]
-  followers      Followers[]    @relation("UserFollowers")
-  following      Followers[]    @relation("UserFollowing")
-  friends        Friends[]      @relation("UserFriends")
-  friendOf       Friends[]      @relation("UserFriendsFriend")
-  Friends        Friends[]
-  Groups         Groups[]
-  GroupMembers   GroupMembers[]
-  GroupPosts     GroupPosts[]
+  id               String          @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  email            String          @unique
+  password         String
+  gender           String
+  profilePicture   String?
+  bio              String?
+  posts            Posts[]
+  comments         Comments[]
+  likes            Likes[]
+  followers        Followers[]     @relation("UserFollowers")
+  following        Followers[]     @relation("UserFollowing")
+  friends          Friends[]       @relation("UserFriends")
+  friendOf         Friends[]       @relation("UserFriendsFriend")
+  Friends          Friends[]
+  Groups           Groups[]
+  GroupMembers     GroupMembers[]
+  GroupPosts       GroupPosts[]
+  Notifications    Notifications[]
+  Messages         Messages[]
+  sentMessages     Messages[]      @relation("MessageSender")
+  receivedMessages Messages[]      @relation("MessageReceiver")
 }
 
 model Posts {
@@ -94,6 +98,7 @@ model Groups {
   ownerId     String         @db.ObjectId
   members     GroupMembers[]
   posts       GroupPosts[]
+  Messages    Messages[]
 }
 
 model GroupMembers {
@@ -102,7 +107,7 @@ model GroupMembers {
   groupId  String   @db.ObjectId
   user     Users    @relation(fields: [userId], references: [id])
   userId   String   @db.ObjectId
-  role     String // Example: 'admin', 'member'
+  role     String // 'admin', 'member'
   joinedAt DateTime @default(now())
 }
 
@@ -116,4 +121,28 @@ model GroupPosts {
   authorId  String     @db.ObjectId
   comments  Comments[]
   likes     Likes[]
+}
+
+model Notifications {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String // 'like', 'comment', 'follow', 'friend_request'
+  message   String
+  read      Boolean  @default(false) // trạng thái thông báo đã đọc/chưa đọc
+  user      Users    @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+}
+
+model Messages {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  content    String
+  sender     Users    @relation("MessageSender", fields: [senderId], references: [id])
+  senderId   String   @db.ObjectId
+  receiver   Users?   @relation("MessageReceiver", fields: [receiverId], references: [id]) // cá nhân
+  receiverId String?  @db.ObjectId
+  group      Groups?  @relation(fields: [groupId], references: [id]) // nhóm chat
+  groupId    String?  @db.ObjectId
+  sentAt     DateTime @default(now())
+  Users      Users?   @relation(fields: [usersId], references: [id])
+  usersId    String?  @db.ObjectId
 }
