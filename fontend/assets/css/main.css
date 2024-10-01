@@ -11,3 +11,13 @@
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
 }
+
+
+* {
+    font-family: "Signika", sans-serif;
+    font-optical-sizing: auto;
+}
+
+#sidebar .router-link-active {
+    background-color: #e5e7eb;
+}

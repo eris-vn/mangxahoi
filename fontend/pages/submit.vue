@@ -9,7 +9,7 @@
             <div class="my-5">
               <Button label="Tag tên" severity="secondary" rounded />
             </div>
-            <QuillEditor theme="snow" placeholder="Nội dung" />
+            <Editor editorStyle="height: 50px" placeholder="Nhập nội dung" />
             <div class="flex flex-row-reverse mt-4">
               <Button
                 label="Đăng bài"

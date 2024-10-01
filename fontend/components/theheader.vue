@@ -10,11 +10,14 @@
           aria-describedby="username-help"
           placeholder="Tìm kiếm"
           class="w-full max-w-[480px]"
+          v-model="search"
+          @keyup.enter="onSearch()"
         />
 
         <!-- Nav Links (hidden on mobile, visible on desktop) -->
         <nav class="hidden md:flex items-center space-x-4" v-if="isLogged">
-          <div
+          <NuxtLink
+            to="/submit"
             class="flex gap-3 items-center hover:bg-slate-200 p-2 px-3 rounded-lg cursor-pointer"
           >
             <img
@@ -24,7 +27,7 @@
               class="h-5 w-5"
             />
             Đăng bài
-          </div>
+          </NuxtLink>
           <div>
             <div class="cursor-pointer" @click="showNotification">
               <img
@@ -143,6 +146,7 @@
 <script setup lang="ts">
 import Login from "./modal/login.vue";
 import Register from "./modal/register.vue";
+const router = useRouter();
 
 const isLogged = ref(true);
 
@@ -158,6 +162,16 @@ const showNotification = (event: any) => {
 
 const isVisibleLogin = ref(false);
 const isVisibleRegister = ref(false);
+
+const search = ref();
+const onSearch = () => {
+  router.push({
+    path: `/search/posts`,
+    query: {
+      q: search.value,
+    },
+  });
+};
 </script>
 
 <style scoped></style>

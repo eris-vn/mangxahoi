@@ -10,7 +10,7 @@
         id="sidebar"
         class="bg-white text-gray-800 w-64 p-6 absolute md:relative z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out h-full md:h-auto overflow-y-auto"
       >
-        <ul id="sidebar">
+        <ul>
           <li class="mb-2">
             <NuxtLink
               href="/"
@@ -38,32 +38,28 @@
           </li>
           <li class="mb-2">
             <NuxtLink
-              href="/friends"
+              href="/groups"
               class="group flex gap-4 py-2 px-4 rounded hover:bg-gray-200"
             >
-              <div>
-                <svg
-                  class="w-6 h-6 text-gray-700"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H6Zm7.25-2.095c.478-.86.75-1.85.75-2.905a5.973 5.973 0 0 0-.75-2.906 4 4 0 1 1 0 5.811ZM15.466 20c.34-.588.535-1.271.535-2v-1a5.978 5.978 0 0 0-1.528-4H18a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-4.535Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </div>
-              Bạn bè</NuxtLink
+              <Icon name="ph:list-dashes-fill" class="text-2xl"></Icon>
+              Bài viết</NuxtLink
             >
           </li>
           <li class="mb-2">
             <NuxtLink
-              href="/groups"
+              href="/groups/discover"
+              class="group flex items-center gap-4 py-2 px-4 rounded hover:bg-gray-200"
+            >
+              <Icon
+                name="material-symbols:explore-outline"
+                class="text-2xl"
+              ></Icon>
+              Khám phá</NuxtLink
+            >
+          </li>
+          <li class="mb-2">
+            <NuxtLink
+              href="/groups/joins"
               class="group flex gap-4 py-2 px-4 rounded hover:bg-gray-200"
             >
               <div>
@@ -84,38 +80,13 @@
                   />
                 </svg>
               </div>
-              Hội nhóm</NuxtLink
+              Nhóm của bạn</NuxtLink
             >
           </li>
-          <!-- <li class="mb-2">
-            <NuxtLink
-              href="/video"
-              class="group flex gap-4 py-2 px-4 rounded hover:bg-gray-200"
-            >
-              <div>
-                <svg
-                  class="w-6 h-6 text-gray-700"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M19.003 3A2 2 0 0 1 21 5v2h-2V5.414L17.414 7h-2.828l2-2h-2.172l-2 2H9.586l2-2H9.414l-2 2H3V5a2 2 0 0 1 2-2h14.003ZM3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9H3Zm2-2.414L6.586 5H5v1.586Zm4.553 4.52a1 1 0 0 1 1.047.094l4 3a1 1 0 0 1 0 1.6l-4 3A1 1 0 0 1 9 18v-6a1 1 0 0 1 .553-.894Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </div>
-              Video</NuxtLink
-            >
-          </li> -->
         </ul>
-        <Divider />
+        <!-- <Divider /> -->
 
-        <Accordion value="0">
+        <!-- <Accordion value="0">
           <AccordionPanel value="0">
             <AccordionHeader>GẦN ĐÂY</AccordionHeader>
             <AccordionContent
@@ -159,7 +130,7 @@
               </div>
             </AccordionContent>
           </AccordionPanel>
-        </Accordion>
+        </Accordion> -->
       </aside>
 
       <!-- Main Content -->

@@ -5,7 +5,7 @@
         <div class="col-span-12 lg:col-span-8">
           <Tabs value="0" class="mb-4 rounded-md overflow-hidden">
             <TabList>
-              <Tab value="0">Dành cho bạn</Tab>
+              <Tab value="0">Đề xuất</Tab>
               <Tab value="1">Đang theo dõi</Tab>
             </TabList>
           </Tabs>
