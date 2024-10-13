@@ -73,7 +73,7 @@
 
               <div class="h-[1px] bg-gray-200 my-2"></div>
 
-              <div
+              <NuxtLink to="/settings"
                 class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
               >
                 <svg
@@ -87,7 +87,7 @@
                   />
                 </svg>
                 Cài đặt
-              </div>
+              </NuxtLink>
 
               <div
                 class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
