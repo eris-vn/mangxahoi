@@ -36,6 +36,7 @@ model Users {
   Messages         Messages[]
   sentMessages     Messages[]      @relation("MessageSender")
   receivedMessages Messages[]      @relation("MessageReceiver")
+  actionTickets    ActionTickets[]
 }
 
 model Posts {
@@ -145,4 +146,21 @@ model Messages {
   sentAt     DateTime @default(now())
   Users      Users?   @relation(fields: [usersId], references: [id])
   usersId    String?  @db.ObjectId
+}
+
+model VerificationCodes {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  email      String   
+  code       String
+  expired_at DateTime
+}
+
+model ActionTickets {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  Users      Users?   @relation(fields: [usersId], references: [id])
+  usersId    String?  @db.ObjectId
+  ticket     String
+  action     String
+  status     Int
+  expired_at DateTime
 }

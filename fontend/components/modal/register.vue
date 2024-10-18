@@ -7,52 +7,38 @@
       header="Đăng ký"
       :style="{ width: '32rem' }"
     >
-      <!-- Họ và tên -->
-      <InputText
-        v-model="formData.name"
-        id="fullName"
-        class="w-full mb-2"
-        placeholder="Nhập họ và tên"
-      />
-      <span v-if="errors.name" class="text-red-500">{{ errors.name }}</span>
-
       <!-- Email -->
       <InputText
         v-model="formData.email"
         id="email"
-        class="w-full mb-2"
+        class="w-full mb-4"
         placeholder="Nhập email"
       />
       <span v-if="errors.email" class="text-red-500">{{ errors.email }}</span>
 
-      <!-- Giới tính -->
-      <div class="flex flex-wrap gap-4 justify-around mb-4">
-        <div class="flex items-center">
-          <RadioButton
-            v-model="formData.gender"
-            inputId="ingredient1"
-            name="gender"
-            value="Male"
-          />
-          <label for="ingredient1" class="ml-2">Nam</label>
-        </div>
-        <div class="flex items-center">
-          <RadioButton
-            v-model="formData.gender"
-            inputId="ingredient2"
-            name="gender"
-            value="Female"
-          />
-          <label for="ingredient2" class="ml-2">Nữ</label>
-        </div>
+      <div class="flex relative">
+        <InputText
+          id="codeOTP"
+          class="w-full mb-4"
+          placeholder="Mã xác nhận"
+        />
+        <div class="absolute translate-y-1/2 right-5 border-l border-[#ccc] cursor-pointer" @click="sendEmail"><span class="text-[#4A88FC] px-4 hover:opacity-80">Gửi mã</span></div>
       </div>
-      <span v-if="errors.gender" class="text-red-500">{{ errors.gender }}</span>
+      <span v-if="errors.OTP" class="text-red-500">{{ errors.OTP }}</span>
+     <!-- Họ và tên -->
+     <InputText
+        v-model="formData.name"
+        id="fullName"
+        class="w-full mb-4"
+        placeholder="Nhập họ và tên"
+      />
+      <span v-if="errors.name" class="text-red-500">{{ errors.name }}</span>
 
       <!-- Mật khẩu -->
       <InputText
         v-model="formData.password"
         id="password"
-        class="w-full mb-2"
+        class="w-full mb-4"
         type="password"
         placeholder="Mật khẩu"
       />
@@ -62,7 +48,7 @@
       <InputText
         v-model="formData.confirmPassword"
         id="confirmPassword"
-        class="w-full mb-2"
+        class="w-full mb-4"
         type="password"
         placeholder="Xác nhận mật khẩu"
       />
@@ -86,12 +72,13 @@
 </template>
 
 <script setup lang="ts">
+import type { RefSymbol } from '@vue/reactivity';
 import { ref } from 'vue';
 
 const formData = ref({
   name: '',
   email: '',
-  gender: '',
+  OTP: '',
   password: '',
   confirmPassword: ''
 });
@@ -99,7 +86,7 @@ const formData = ref({
 const errors = ref({
   name: '',
   email: '',
-  gender: '',
+  OTP: '',
   password: '',
   confirmPassword: ''
 });
@@ -122,7 +109,7 @@ async function handleRegister() {
   errors.value = {
     name: '',
     email: '',
-    gender: '',
+    OTP: '',
     password: '',
     confirmPassword: ''
   };
@@ -136,8 +123,8 @@ async function handleRegister() {
   } else if (!validateEmail(formData.value.email)) {
     errors.value.email = 'Email không hợp lệ';
   }
-  if (!formData.value.gender) {
-    errors.value.gender = 'Vui lòng chọn giới tính';
+  if (!formData.value.OTP) {
+    errors.value.OTP = 'Vui lòng nhập mã';
   }
   if (!formData.value.password) {
     errors.value.password = 'Mật khẩu không được để trống';
@@ -160,6 +147,17 @@ async function handleRegister() {
     body: JSON.stringify(formData.value)
   });
 
+  const json = await response.json();
+  console.log(json);
+}
+const sendEmail = async ()=>{
+  const response = await fetch('http://localhost:4000/auth/sendEmail', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({email: formData.value.email})
+  });
   const json = await response.json();
   console.log(json);
 }
