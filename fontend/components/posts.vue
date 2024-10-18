@@ -5,11 +5,11 @@
       <div class="flex gap-3">
         <img
           class="h-11 w-11 object-cover rounded-full border"
-          src="https://i18nexus.com/_next/static/media/nextjs.e54be70c.svg"
+          src="https://www.inkoop.io/static/3fd155c993893819981d0b9fa56b5057/b7804/logo.png"
           alt=""
         />
         <div>
-          <div class="font-bold">NextJS</div>
+          <div class="font-bold">NuxtJS</div>
           <div class="text-sm">15 phút trước</div>
         </div>
       </div>
@@ -36,7 +36,7 @@
       </div>
       <div
         v-if="actionVisible"
-        class="absolute right-4 top-14 mt-2 w-[15rem] bg-white border border-gray-200 rounded-lg shadow-md p-2"
+        class="absolute right-4 top-14 mt-2 w-[15rem] bg-white border border-gray-200 rounded-lg shadow-md p-2 z-10"
       >
         <div class="flex flex-col gap-1">
           <div
@@ -90,6 +90,18 @@
             </svg>
             Tố cáo
           </div>
+
+          <hr />
+
+          <div
+            class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
+          >
+            <Icon
+              name="gg:remove"
+              class="text-2xl ms-[2px] text-gray-600"
+            ></Icon>
+            Gỡ bài viết
+          </div>
         </div>
       </div>
     </div>
@@ -97,11 +109,28 @@
     <h3 class="mt-3">New Update!</h3>
     <!-- Posts Image -->
     <div class="mt-3">
-      <img
-        src="https://media.licdn.com/dms/image/D4E12AQEIIDCbb5draA/article-cover_image-shrink_720_1280/0/1696065152678?e=2147483647&v=beta&t=vplfPARtNBS22Cj-JVaqLwndsIwkKLcJpAjwNOyphDc"
+      <Image
+        src="https://nuxt.com/__og-image__/static/docs/getting-started/upgrade/og.png"
         alt=""
         class="rounded-md w-full max-h-[400px] object-cover"
-      />
+        preview
+      >
+        <template #image>
+          <img
+            src="https://nuxt.com/__og-image__/static/docs/getting-started/upgrade/og.png"
+            alt="image"
+          />
+        </template>
+        <template #preview="slotProps">
+          <div class="container mx-auto">
+            <img
+              src="https://nuxt.com/__og-image__/static/docs/getting-started/upgrade/og.png"
+              alt="preview"
+              :style="slotProps.style"
+            />
+          </div>
+        </template>
+      </Image>
     </div>
     <!-- Posts Interact Count -->
     <div class="flex justify-between mt-3">
@@ -192,13 +221,14 @@
       <!-- Posts Header -->
       <div class="flex justify-between items-center sticky top-0 bg-white pb-3">
         <div class="flex gap-3">
-          <img
+          <Image
             class="h-11 w-11 object-cover rounded-full border"
-            src="https://i18nexus.com/_next/static/media/nextjs.e54be70c.svg"
+            src="https://www.inkoop.io/static/3fd155c993893819981d0b9fa56b5057/b7804/logo.png"
             alt=""
+            preview
           />
           <div>
-            <div class="font-bold">NextJS</div>
+            <div class="font-bold">NuxtJS</div>
             <div class="text-sm">15 phút trước</div>
           </div>
         </div>
@@ -309,7 +339,7 @@
       <!-- Posts Image -->
       <div class="mt-3">
         <img
-          src="https://media.licdn.com/dms/image/D4E12AQEIIDCbb5draA/article-cover_image-shrink_720_1280/0/1696065152678?e=2147483647&v=beta&t=vplfPARtNBS22Cj-JVaqLwndsIwkKLcJpAjwNOyphDc"
+          src="https://nuxt.com/__og-image__/static/docs/getting-started/upgrade/og.png"
           alt=""
           class="rounded-md w-full max-h-[400px] object-cover"
         />
@@ -323,10 +353,10 @@
         </div>
       </div>
       <!-- Posts Action -->
-      <div class="mt-3 flex gap-3">
+      <div class="mt-3 grid grid-cols-3 gap-3">
         <!-- Like -->
         <div
-          class="bg-gray-100 hover:bg-gray-200 rounded-lg p-1 px-2 w-fit flex gap-1 border border-gray-200 cursor-pointer"
+          class="bg-gray-100 hover:bg-gray-200 transition duration-150 ease-in-out rounded-sm p-1 px-2 flex gap-1 border border-gray-200 hover:border-gray-300 cursor-pointer text-base items-center justify-center"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -345,7 +375,7 @@
 
         <!-- Comment -->
         <div
-          class="bg-gray-100 rounded-lg p-1 px-2 w-fit flex gap-1 border border-gray-200 cursor-pointer"
+          class="bg-gray-100 hover:bg-gray-200 transition duration-150 ease-in-out rounded-sm p-1 px-2 flex gap-1 border border-gray-200 hover:border-gray-300 cursor-pointer text-base items-center justify-center"
           @click="visibleDialog = true"
         >
           <svg
@@ -363,7 +393,7 @@
 
         <!-- Share -->
         <div
-          class="bg-gray-100 rounded-lg p-1 px-2 w-fit flex gap-1 border border-gray-200 cursor-pointer"
+          class="bg-gray-100 hover:bg-gray-200 transition duration-150 ease-in-out rounded-sm p-1 px-2 flex gap-1 border border-gray-200 hover:border-gray-300 cursor-pointer text-base items-center justify-center"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

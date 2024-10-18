@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen overflow-hidden">
     <!-- Header -->
-    <Theheader></Theheader>
+    <TheHeader></TheHeader>
 
     <!-- Main content wrapper -->
     <div class="flex flex-1 pt-[60px] overflow-hidden">
@@ -144,14 +144,12 @@
       id="overlay"
       class="hidden fixed inset-0 bg-black opacity-50 z-30"
     ></div>
+
+    <CreatePosts></CreatePosts>
   </div>
 </template>
 
-<script>
-export default {
-  name: "DefaultLayout",
-};
-</script>
+<script></script>
 
 <style lang="scss">
 .p-accordionheader {

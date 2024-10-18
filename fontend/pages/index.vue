@@ -3,12 +3,29 @@
     <div class="mx-auto w-full xl:w-9/12">
       <div class="grid grid-cols-12 gap-4">
         <div class="col-span-12 lg:col-span-8">
-          <Tabs value="0" class="mb-4 rounded-md overflow-hidden">
+          <div class="bg-white p-4 rounded-sm mb-4 gap-2 flex items-center">
+            <div>
+              <Avatar
+                label="S"
+                class="mr-2 cursor-pointer"
+                size="large"
+                shape="circle"
+              />
+            </div>
+            <div
+              class="text-gray-500 bg-zinc-100 p-2 px-4 rounded-md cursor-pointer w-full"
+              @click="createPost.isActive = true"
+            >
+              Bạn muốn chia sẽ điều gì?
+            </div>
+          </div>
+
+          <!-- <Tabs value="0" class="mb-4 rounded-md overflow-hidden">
             <TabList>
               <Tab value="0">Đề xuất</Tab>
               <Tab value="1">Đang theo dõi</Tab>
             </TabList>
-          </Tabs>
+          </Tabs> -->
 
           <!-- Posts -->
           <Posts v-for="i in 10"></Posts>
@@ -91,6 +108,8 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const createPost = useCreatePost();
+</script>
 
 <style scoped></style>

@@ -6,9 +6,10 @@
         <div class="bg-white rounded-md shadow-sm p-5">
           <div class="flex justify-between items-center mb-4">
             <div class="font-semibold text-lg">Lời mời kết bạn</div>
-            <div class="text-blue-600 flex items-center">
-              XEM TẤT CẢ <Icon name="mingcute:right-line"></Icon>
-            </div>
+            <nuxt-link to="/friends/requests">
+              <div class="text-blue-600 flex items-center">
+                XEM TẤT CẢ <Icon name="mingcute:right-line"></Icon></div
+            ></nuxt-link>
           </div>
 
           <div class="grid grid-cols-15 gap-5">

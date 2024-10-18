@@ -17,8 +17,8 @@
         <!-- Nav Links (hidden on mobile, visible on desktop) -->
         <nav class="hidden md:flex items-center space-x-4" v-if="isLogged">
           <NuxtLink
-            to="/submit"
-            class="flex gap-3 items-center hover:bg-slate-200 p-2 px-3 rounded-lg cursor-pointer"
+            class="flex gap-3 items-center hover:bg-zinc-200 p-2 px-3 rounded-lg cursor-pointer"
+            @click="createPost.isActive = true"
           >
             <img
               src="https://s3.cloudfly.vn/shoperis/2024/09/f13f5452fe57018810c3c22000ce08d5.avif"
@@ -146,6 +146,8 @@
 <script setup lang="ts">
 import Login from "./modal/login.vue";
 import Register from "./modal/register.vue";
+
+const createPost = useCreatePost();
 const router = useRouter();
 
 const isLogged = ref(true);

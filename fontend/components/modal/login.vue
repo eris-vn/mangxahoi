@@ -8,12 +8,17 @@
       :style="{ width: '32rem' }"
     >
       <InputText
-        id="username"
+        id="email"
         class="w-full mb-4"
         placeholder="Email hoặc số điện thoại"
       />
 
-      <InputText id="username" class="w-full mb-4" placeholder="Mật khẩu" />
+      <InputText
+        id="password"
+        type="password"
+        class="w-full mb-4"
+        placeholder="Mật khẩu"
+      />
 
       <div
         class="text-end mb-4 text-blue-600 cursor-pointer"
