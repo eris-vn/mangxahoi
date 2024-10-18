@@ -1,12 +1,20 @@
 import prisma from "@/libs/prisma";
 import { Hono } from "hono";
 import * as bcrypt from "bcryptjs";
+import * as path from 'path';
+import * as fs from 'fs'
+import * as handlebars from 'handlebars'
+import * as nodemailer from 'nodemailer'
+import moment from 'moment'
+import { CryptoHasher } from "bun";
 import { decode, sign, verify } from "hono/jwt";
 import { setCookie } from "hono/cookie";
 import { OAuth2Client } from "google-auth-library";
 const authController = new Hono();
 
-
+const templatePath = path.join(__dirname, '../email/templates/register.hbs');
+const source = fs.readFileSync(templatePath, 'utf-8');
+const template = handlebars.compile(source);
 function getOauth2Client() {
   const oAuth2Client = new OAuth2Client(
     '81902586117-qin78jipkm7eu8e41tqtqtiv5vu0tdv0.apps.googleusercontent.com',
@@ -215,6 +223,54 @@ authController.post('/verify/code', async (c) => {
     return c.json({ error: error || 'Internal Server Error' }, 401);
   }
 });
+authController.post('/sendEmail', async (c)=>{
+  try {
+    const body = await c.req.json();
+    
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const hasher = new CryptoHasher("sha256");
+    hasher.update(code);
+   
+    const expired_at = moment().add(120, 'seconds').toDate();
+    console.log(expired_at);
+    const verificationCodes = await prisma.verificationCodes.create({
+      data:{
+        email: body.email as string,
+        code : hasher.digest("hex"),
+        expired_at: expired_at
+      }
+    });
+   
+  if(verificationCodes){
+    const otp = code;
+			// Gửi email xác nhận
+			const htmlContent = template({ otp });
+				// Cấu hình transporter
+			const transporter = nodemailer.createTransport({
+				host: 'smtp.example.com',
+				service: 'Gmail',
+				auth: {
+					user: Bun.env.EMAIL_USER,
+					pass: Bun.env.EMAIL_PASS
+				}
+			});
 
+				// Gửi email
+			await transporter.sendMail({
+				from: '"Acme" <onboarding@resend.dev>',
+				to: verificationCodes.email,
+				subject: 'Xác nhận đăng ký tài khoản',
+				html: htmlContent
+			});
+			return c.json({
+			  status: 200,
+			  message: "gửi mail thành công",
+			  user: verificationCodes
+			});
+  }
+  } catch (error) {
+    return c.json({ error: "lỗi server" }, 500);
+  }
+})
 
 export default authController;
