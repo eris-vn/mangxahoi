@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "group",
+  layout: "groups",
 });
 </script>
 
