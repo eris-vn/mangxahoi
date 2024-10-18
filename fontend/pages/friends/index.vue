@@ -6,10 +6,9 @@
         <div class="bg-white rounded-md shadow-sm p-5">
           <div class="flex justify-between items-center mb-4">
             <div class="font-semibold text-lg">Lời mời kết bạn</div>
-            <nuxt-link to="/friends/requests">
-              <div class="text-blue-600 flex items-center">
-                XEM TẤT CẢ <Icon name="mingcute:right-line"></Icon></div
-            ></nuxt-link>
+            <NuxtLink to="/friends/requests"class="text-blue-600 flex items-center hover:underline">
+              XEM TẤT CẢ <Icon name="mingcute:right-line"></Icon>
+            </NuxtLink>
           </div>
 
           <div class="grid grid-cols-15 gap-5">
@@ -31,12 +30,12 @@
                   <button
                     class="bg-blue-500 text-white px-4 py-2 rounded-sm hover:bg-blue-600 shadow-sm transition duration-150 ease-in-out"
                   >
-                    XÁC NHẬN
+                    Xác nhận
                   </button>
                   <button
                     class="bg-gray-200 text-gray-700 px-4 py-2 rounded-sm hover:bg-gray-300 shadow-sm transition duration-150 ease-in-out"
                   >
-                    XOÁ
+                    Xoá
                   </button>
                 </div>
               </div>
@@ -57,9 +56,9 @@
         <div class="bg-white rounded-md shadow-sm p-5">
           <div class="flex justify-between items-center mb-4">
             <div class="font-semibold text-lg">Danh sách bạn bè</div>
-            <div class="text-blue-600 flex items-center">
+            <NuxtLink to="/friends/list"class="text-blue-600 flex items-center hover:underline">
               XEM TẤT CẢ <Icon name="mingcute:right-line"></Icon>
-            </div>
+            </NuxtLink>
           </div>
 
           <div class="grid grid-cols-12 gap-5">
