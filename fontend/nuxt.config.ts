@@ -12,12 +12,23 @@ export default defineNuxtConfig({
       },
     },
   },
-  modules: ["@primevue/nuxt-module", "@nuxt/icon", "@nuxt/fonts", "nuxt-vue3-google-signin"],
+  modules: [
+    "@primevue/nuxt-module",
+    "@nuxt/icon",
+    "@nuxt/fonts",
+    "nuxt-vue3-google-signin",
+    "@pinia/nuxt",
+    "@vee-validate/nuxt",
+  ],
   primevue: {
     importTheme: { from: "@/themes/main.js" },
+    composables: {
+      exclude: ["useToast"],
+    },
   },
   googleSignIn: {
-    clientId: '81902586117-qin78jipkm7eu8e41tqtqtiv5vu0tdv0.apps.googleusercontent.com',
+    clientId:
+      "81902586117-qin78jipkm7eu8e41tqtqtiv5vu0tdv0.apps.googleusercontent.com",
   },
   postcss: {
     plugins: {

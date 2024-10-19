@@ -73,7 +73,8 @@
 
               <div class="h-[1px] bg-gray-200 my-2"></div>
 
-              <NuxtLink to="/settings"
+              <NuxtLink
+                to="/settings"
                 class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
               >
                 <svg
@@ -150,7 +151,7 @@ import Register from "./modal/register.vue";
 const createPost = useCreatePost();
 const router = useRouter();
 
-const isLogged = ref(true);
+const isLogged = ref(false);
 
 const profile = ref();
 const toggle = (event: any) => {

@@ -9,7 +9,7 @@ export const useApi = async <T>(
 
   const api = $fetch.create({
     // baseURL: "https://api.shoperis.vn",
-    baseURL: "http://localhost:4000",
+    baseURL: "http://localhost:4000/api",
     onRequest({ request, options, error }) {
       if (accessToken) {
         const headers = (options.headers ||= {});

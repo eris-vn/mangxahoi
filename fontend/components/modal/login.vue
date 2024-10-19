@@ -86,14 +86,12 @@ const handleOnSuccess = async (response: ImplicitFlowSuccessResponse) => {
   // send code to a backend server to verify it.
   console.log("Code: ", response.code);
 
-  const result = await fetch("http://localhost:4000/auth/verify/code", {
+  const { data: result } = await useApi("/auth/verify/code", {
     method: "POST",
     body: JSON.stringify({
       code: response.code,
     }),
   });
-  const json = await result.json();
-  console.log(json);
 };
 const handleOnError = (errorResponse: ImplicitFlowErrorResponse) => {
   console.log("Error: ", errorResponse);

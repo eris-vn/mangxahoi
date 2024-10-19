@@ -149,7 +149,10 @@
   </div>
 </template>
 
-<script></script>
+<script>
+import CreatePosts from "~/components/CreatePosts.vue";
+import TheHeader from "~/components/TheHeader.vue";
+</script>
 
 <style lang="scss">
 .p-accordionheader {
