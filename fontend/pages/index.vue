@@ -3,7 +3,10 @@
     <div class="mx-auto w-full xl:w-9/12">
       <div class="grid grid-cols-12 gap-4">
         <div class="col-span-12 lg:col-span-8">
-          <div class="bg-white p-4 rounded-sm mb-4 gap-2 flex items-center">
+          <div
+            class="bg-white p-4 rounded-sm mb-4 gap-2 flex items-center"
+            v-if="auth.user"
+          >
             <div>
               <Avatar
                 label="S"
@@ -110,6 +113,7 @@
 
 <script setup lang="ts">
 const createPost = useCreatePost();
+const auth = useAuth();
 </script>
 
 <style scoped></style>

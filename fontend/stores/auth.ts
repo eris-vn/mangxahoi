@@ -64,8 +64,6 @@ export const useAuth = defineStore("auth", () => {
   }
 
   async function signOut() {
-    console.log("test");
-
     await useApi("/auth/logout", {
       method: "POST",
       headers: {
@@ -75,7 +73,11 @@ export const useAuth = defineStore("auth", () => {
     accessToken.value = null;
     refreshToken.value = null;
     user.value = null;
-    navigateTo({ path: "/login" });
+    if (import.meta.client) {
+      const toast = useToast();
+      toast.success("Đăng xuất thành công");
+      navigateTo({ path: "/" });
+    }
   }
 
   function getAccessToken() {

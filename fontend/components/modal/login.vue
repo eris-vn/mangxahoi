@@ -75,6 +75,11 @@
         >
       </div>
     </Dialog>
+
+    <CreateProfile
+      v-model="isVisibleCreateProfile"
+      :action_ticket="actionTicket"
+    ></CreateProfile>
   </div>
 </template>
 
@@ -89,6 +94,24 @@ import type { ApiResponse } from "~/types/api";
 
 const toast = useToast();
 const auth = useAuth();
+
+// Xử lý chuyển đổi các modal
+const visible = defineModel({ default: false });
+const emit = defineEmits([
+  "showForgetPass",
+  "showRegister",
+  "showCreateProfile",
+]);
+
+function switchToForgetPass() {
+  visible.value = false;
+  emit("showForgetPass");
+}
+
+function switchToRegister() {
+  visible.value = false;
+  emit("showRegister");
+}
 
 const schema = yup.object({
   email: yup
@@ -131,6 +154,7 @@ async function handleLogin() {
     ApiResponse<{
       access_token: string;
       refresh_token: string;
+      action_ticket: string;
     }>
   >("/auth/login", {
     method: "POST",
@@ -139,29 +163,30 @@ async function handleLogin() {
   });
 
   if (response.value?.code == 200) {
-    auth.setTokens(
+    toast.success(response.value.message);
+
+    await auth.setTokens(
       response.value.data.access_token,
       response.value.data.refresh_token
     );
+    visible.value = false;
+
+    if (!auth.user.profile) {
+      emit("showCreateProfile");
+    }
+  } else if (response.value?.code == 201) {
     toast.success(response.value.message);
+    visible.value = false;
+    actionTicket.value = response.value.data.action_ticket;
+    isVisibleCreateProfile.value = true;
   } else {
     toast.error(response.value?.message ?? "Lấy dữ liệu thất bại");
   }
 }
 
-// Xử lý chuyển đổi các modal
-const visible = defineModel({ default: false });
-const emit = defineEmits(["showForgetPass", "showRegister"]);
-
-function switchToForgetPass() {
-  visible.value = false;
-  emit("showForgetPass");
-}
-
-function switchToRegister() {
-  visible.value = false;
-  emit("showRegister");
-}
+// xử lý tạo profile
+const isVisibleCreateProfile = ref(false);
+const actionTicket = ref();
 </script>
 
 <style scoped></style>

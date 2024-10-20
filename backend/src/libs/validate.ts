@@ -1,5 +1,6 @@
-import { object, string, number, date, InferType, ValidationError } from "yup";
+import { ValidationError } from "yup";
 import { HTTPException } from "hono/http-exception";
+import * as yup from "yup";
 
 interface ValidationResult {
   success: boolean;
@@ -8,7 +9,7 @@ interface ValidationResult {
 
 async function validate(objectData: any, data: any) {
   try {
-    return await object(objectData).validate(data);
+    return await yup.object(objectData).validate(data);
   } catch (error) {
     if (error instanceof ValidationError) {
       const firstError = error.errors[0];
@@ -26,4 +27,4 @@ async function validate(objectData: any, data: any) {
   }
 }
 
-export { validate, ValidationResult };
+export { validate, yup, ValidationResult };

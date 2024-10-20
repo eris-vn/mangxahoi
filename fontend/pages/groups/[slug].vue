@@ -47,15 +47,11 @@
 
             <div class="h-[1px] bg-gray-200"></div>
 
-            <Tabs value="0" class="rounded-md overflow-hidden">
+            <Tabs v-model:value="tab" class="rounded-md overflow-hidden">
               <TabList>
-                <Tab value="0">
-                  <NuxtLink to="/groups/test">Bài viết</NuxtLink></Tab
-                >
-                <Tab value="1">
-                  <NuxtLink to="/groups/test/about">Giới thiệu</NuxtLink>
-                </Tab>
-                <Tab value="2">Thành viên</Tab>
+                <Tab value="posts"> Bài viết</Tab>
+                <Tab value="about"> Giới thiệu </Tab>
+                <Tab value="members">Thành viên</Tab>
               </TabList>
             </Tabs>
           </div>
@@ -71,6 +67,31 @@
 definePageMeta({
   layout: "groups",
 });
+
+const router = useRouter();
+const tab = ref("posts");
+
+watch(tab, (value) => {
+  console.log(value);
+
+  onTabChange(value);
+});
+
+const onTabChange = (value: any) => {
+  switch (value) {
+    case "posts":
+      router.push("/groups/test");
+      break;
+    case "about":
+      router.push("/groups/test/about");
+      break;
+    case "members":
+      router.push("/groups/test/members");
+      break;
+    default:
+      break;
+  }
+};
 </script>
 
 <style scoped></style>

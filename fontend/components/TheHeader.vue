@@ -17,7 +17,7 @@
         />
 
         <!-- Nav Links (hidden on mobile, visible on desktop) -->
-        <nav class="hidden md:flex items-center space-x-4" v-if="isLogged">
+        <nav class="hidden md:flex items-center space-x-4" v-if="auth.user">
           <NuxtLink
             class="flex gap-3 items-center hover:bg-zinc-200 p-2 px-3 rounded-lg cursor-pointer"
             @click="createPost.isActive = true"
@@ -64,12 +64,24 @@
             <div class="flex flex-col w-[15rem]">
               <NuxtLink
                 to="/sonnv"
-                class="flex gap-3 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
+                class="grid grid-cols-12 gap-3 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
               >
-                <Avatar label="S" class="cursor-pointer w-full" size="large" />
-                <div>
-                  <div class="text-gray-800">Nguyễn Văn Sơn</div>
-                  <div class="text-sm">@sonnv</div>
+                <Avatar
+                  label="S"
+                  class="cursor-pointer col-span-3"
+                  size="large"
+                />
+                <div class="col-span-9">
+                  <div class="text-gray-800 truncate">
+                    {{ auth.user.profile.name }}
+                  </div>
+                  <div class="text-sm truncate">
+                    {{
+                      auth.user.profile.user
+                        ? `@${auth.user.profile.user}`
+                        : `@${auth.user.id}`
+                    }}
+                  </div>
                 </div>
               </NuxtLink>
 
@@ -94,7 +106,7 @@
 
               <div
                 class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
-                @click="isLogged = false"
+                @click="auth.signOut()"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +157,6 @@
         v-model="isVisibleRegister"
         @show-login="isVisibleLogin = true"
       ></Register>
-      <CreateProfile></CreateProfile>
     </header>
   </div>
 </template>
@@ -155,9 +166,8 @@ import Login from "./modal/login.vue";
 import Register from "./modal/register.vue";
 
 const createPost = useCreatePost();
+const auth = useAuth();
 const router = useRouter();
-
-const isLogged = ref(false);
 
 const profile = ref();
 const toggle = (event: any) => {

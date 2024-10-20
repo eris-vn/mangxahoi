@@ -15,7 +15,6 @@ export const useApi = async <T>(
 
   const defaults: UseFetchOptions<T> = {
     ...options_test,
-    method: "POST",
     baseURL: "http://localhost:4000/api",
     key: toValue(url),
     headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
@@ -37,7 +36,7 @@ export const useApi = async <T>(
       state.data = await $fetch(url, defaults as any);
 
       if (
-        !url.includes("/api/auth/logout") &&
+        !url.includes("logout") && // Chặn việc lặp lại cho /logout
         hasCode(state.data) &&
         state.data.code == 401 &&
         retry

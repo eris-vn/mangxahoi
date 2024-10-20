@@ -2,7 +2,7 @@ import { createMiddleware } from "hono/factory";
 import { Prisma } from "@prisma/client";
 import jwt from "jsonwebtoken";
 
-type user = Prisma.UsersGetPayload<{}>;
+type user = Prisma.UserGetPayload<{}>;
 
 interface UserWithRole extends user {
   roles: string[];
@@ -32,13 +32,10 @@ const authMiddleware = createMiddleware<Env>(async (c, next) => {
   const token = authHeader.split(" ")[1];
 
   if (!token) {
-    return c.json(
-      {
-        code: 401,
-        message: "Vui lòng đăng nhập và thử lại.",
-      },
-      401
-    );
+    return c.json({
+      code: 401,
+      message: "Vui lòng đăng nhập và thử lại.",
+    });
   }
 
   try {
@@ -48,13 +45,10 @@ const authMiddleware = createMiddleware<Env>(async (c, next) => {
   } catch (error) {
     console.log(error);
 
-    return c.json(
-      {
-        code: 401,
-        message: "Vui lòng tải lại trang và thử lại.",
-      },
-      401
-    );
+    return c.json({
+      code: 401,
+      message: "Vui lòng tải lại trang và thử lại.",
+    });
   }
 
   await next();

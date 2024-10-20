@@ -23,11 +23,12 @@
       </div>
       <hr />
 
-      <Form :validation-schema="schema" class="mt-4">
+      <Form class="mt-4">
         <!-- Email -->
         <div class="mb-4">
           <label for="name">Họ và tên</label>
           <Field
+            v-model="formData.name"
             name="name"
             placeholder="Họ và tên"
             class="w-full border border-gray-300 rounded-md p-2 px-3 outline-none shadow-sm focus:border-blue-500 transition duration-300 ease-in-out"
@@ -38,16 +39,17 @@
         <div class="mb-4">
           <label for="name">Sinh nhật</label>
           <DatePicker
-            v-model="formData.date"
+            v-model="formData.birthday"
             dateFormat="dd/mm/yy"
             class="w-full"
             placeholder="Sinh nhật"
+            name="birthday"
           />
-          <ErrorMessage name="name" class="block mt-1 text-red-500" />
+          <ErrorMessage name="birthday" class="block mt-1 text-red-500" />
         </div>
 
         <div class="mb-4">
-          <label for="name">Giới tính</label>
+          <label for="gender">Giới tính</label>
 
           <div class="card">
             <div class="grid grid-cols-3 gap-4">
@@ -80,42 +82,62 @@
               </div>
             </div>
           </div>
+          <ErrorMessage name="gender" class="block mt-1 text-red-500" />
         </div>
 
-        <Button label="Tạo hồ sơ" class="w-full" type="submit"></Button>
+        <Button
+          label="Tạo hồ sơ"
+          class="w-full"
+          @click="createProfile"
+        ></Button>
       </Form>
     </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-const visible = ref(true);
-import * as yup from "yup";
+import type { ApiResponse } from "~/types/api";
+
+const visible = defineModel({ required: true, default: false });
+const props = defineProps({
+  action_ticket: { type: String },
+});
+
+const toast = useToast();
+const auth = useAuth();
 
 const formData = reactive({
   name: "",
-  date: null,
+  birthday: null,
   gender: null,
 });
 
-const schema = yup.object({
-  email: yup
-    .string()
-    .email("Email chưa đúng định dạng.")
-    .required("Email không được bỏ trống"),
-  code: yup
-    .string()
-    .length(6, "Mã xác nhận phải có 6 ký tự")
-    .required("Mã xác nhận không được bỏ trống"),
-  password: yup
-    .string()
-    .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
-    .required("Mật khẩu không được bỏ trống"),
-  confirm_password: yup
-    .string()
-    .oneOf([yup.ref("password"), ""], "Mật khẩu xác nhận không khớp")
-    .required("Xác nhận mật khẩu không được bỏ trống"),
-});
+async function createProfile() {
+  const { data: response } = await useApi<
+    ApiResponse<{
+      access_token: string;
+      refresh_token: string;
+    }>
+  >("/user/create", {
+    method: "POST",
+    body: {
+      ...formData,
+      action_ticket: props.action_ticket,
+    },
+    watch: false,
+  });
+
+  if (response.value?.code == 200) {
+    toast.success(response.value.message);
+    await auth.setTokens(
+      response.value.data.access_token,
+      response.value.data.refresh_token
+    );
+    visible.value = false;
+  } else {
+    toast.error(response.value?.message ?? "Lấy dữ liệu thất bại");
+  }
+}
 </script>
 
 <style scoped></style>

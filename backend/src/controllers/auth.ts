@@ -6,16 +6,15 @@ import * as fs from "fs";
 import { decode, sign, verify } from "hono/jwt";
 import { setCookie } from "hono/cookie";
 import { OAuth2Client } from "google-auth-library";
-import { validate } from "@/libs/validate";
+import { validate, yup } from "@/libs/validate";
 import { number, ref, string } from "yup";
 import CryptoJS from "crypto-js";
 import { getUTCTime } from "@/libs/time";
 import { mailer } from "@/libs/mailer";
 import jwt from "jsonwebtoken";
+import authMiddleware from "@/middlewares/auth";
 
 const authController = new Hono();
-
-const templatePath = path.join(__dirname, "../email/templates/register.hbs");
 
 function getOauth2Client() {
   const oAuth2Client = new OAuth2Client(
@@ -92,6 +91,41 @@ authController.post("/login", async (c) => {
       throw new Error("SECRET_KEY is not defined");
     }
 
+    if (!user.profile) {
+      const now = new Date();
+      const expiredAt = new Date(now.getTime() + 15 * 60 * 1000);
+
+      const ticket = CryptoJS.SHA256(`${now.getTime()}`).toString(
+        CryptoJS.enc.Hex
+      );
+
+      // xoá các action ticket tạo profile trước đó nếu có
+      await prisma.actionTicket.deleteMany({
+        where: {
+          userId: user.id,
+          action: "create_profile",
+        },
+      });
+
+      // tạo action ticket mới
+      await prisma.actionTicket.create({
+        data: {
+          userId: user.id,
+          ticket: ticket,
+          action: "create_profile",
+          expiresAt: expiredAt,
+        },
+      });
+
+      return c.json({
+        code: 201,
+        message: "Hãy tạo hồ sơ để tiếp tục.",
+        data: {
+          action_ticket: ticket,
+        },
+      });
+    }
+
     // Xoá các token trước đó / đăng xuất trên các thiết bị khác
     await prisma.refreshToken.deleteMany({
       where: {
@@ -162,24 +196,24 @@ authController.post("/register", async (c) => {
   const now = new Date();
 
   try {
-    const verifyCode = await prisma.verificationCodes.findFirst({
+    const verifyCode = await prisma.verificationCode.findFirst({
       where: {
         email: body.email,
         code: CryptoJS.SHA256(body.code).toString(CryptoJS.enc.Hex),
       },
     });
 
-    if (!verifyCode || verifyCode.expires_at < now) {
+    if (!verifyCode || verifyCode.expiresAt < now) {
       return c.json({ code: -100, message: "Mã xác nhận sai hoặc hết hạn." });
     }
 
-    await prisma.verificationCodes.delete({
+    await prisma.verificationCode.delete({
       where: {
         id: verifyCode.id,
       },
     });
 
-    const checkExist = await prisma.users.findUnique({
+    const checkExist = await prisma.user.findUnique({
       where: {
         email: body.email,
       },
@@ -190,7 +224,7 @@ authController.post("/register", async (c) => {
     }
 
     const encodePassword = await bcrypt.hash(body.password, 10);
-    const newUser = await prisma.users.create({
+    const newUser = await prisma.user.create({
       data: {
         email: body.email,
         password: encodePassword,
@@ -205,29 +239,16 @@ authController.post("/register", async (c) => {
   }
 });
 
-authController.get("/me", async (c) => {
-  try {
-    const token = c.req.header("Authorization")?.replace("Bearer ", "");
-    if (!token) {
-      return c.json({ message: "Không tìm có token" }, 404);
-    }
-    const secret = Bun.env.SECRET_KEY;
-    if (!secret) {
-      throw new Error("SECRET_KEY is not defined");
-    }
-    const data = await verify(token, secret);
-    if (!data) {
-      c.req;
-    }
-    const user = await prisma.users.findFirst({
-      where: {
-        id: data.sub as string | object,
-      },
-    });
-    return c.json({ user }, 200);
-  } catch (error) {
-    return c.json({ message: "Token đã hết hạn." }, 401);
-  }
+authController.post("/logout", authMiddleware, async (c) => {
+  const user = c.var.user;
+
+  await prisma.refreshToken.deleteMany({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  return c.json({ code: 200, msg: "Đăng xuất thành công" });
 });
 
 authController.post("/verify/code", async (c) => {
@@ -308,7 +329,8 @@ authController.post("/verify/code", async (c) => {
 authController.post("/sendEmail", async (c) => {
   const body = await validate(
     {
-      email: string()
+      email: yup
+        .string()
         .email("Email phải đúng định dạng")
         .required("Không bỏ trống email"),
     },
