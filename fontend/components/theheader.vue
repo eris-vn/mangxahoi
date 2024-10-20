@@ -3,7 +3,9 @@
     <header class="bg-white fixed border-b border-gray-300 w-full top-0 z-50">
       <div class="flex justify-between items-center p-4 px-10 gap-3">
         <!-- Logo or Brand Name -->
-        <NuxtLink to="/" class="text-xl font-bold text-gray-700">Logo</NuxtLink>
+        <NuxtLink to="/" class="text-xl font-bold text-gray-700"
+          >FORUM2K</NuxtLink
+        >
 
         <InputText
           id="username"

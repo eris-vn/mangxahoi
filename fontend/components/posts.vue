@@ -576,6 +576,8 @@
 </template>
 
 <script setup lang="ts">
+console.log("TEST");
+
 const actionVisible = ref(false);
 
 const toggleAction = () => {
