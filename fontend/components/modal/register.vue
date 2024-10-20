@@ -38,6 +38,7 @@
         <!-- Mật khẩu -->
         <div class="mb-4">
           <Field
+            type="password"
             v-model="formData.password"
             name="password"
             placeholder="Mật khẩu"
@@ -49,6 +50,7 @@
         <!-- Xác nhận mật khẩu -->
         <div class="mb-4">
           <Field
+            type="password"
             v-model="formData.confirm_password"
             name="confirm_password"
             placeholder="Xác nhận mật khẩu"

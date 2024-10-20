@@ -13,160 +13,164 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id               String          @id @default(auto()) @map("_id") @db.ObjectId
-  email            String          @unique
+model User {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  email            String         @unique
   password         String
-  posts            Posts[]
-  comments         Comments[]
-  likes            Likes[]
-  followers        Followers[]     @relation("UserFollowers")
-  following        Followers[]     @relation("UserFollowing")
-  friends          Friends[]       @relation("UserFriends")
-  friendOf         Friends[]       @relation("UserFriendsFriend")
-  Friends          Friends[]
-  Groups           Groups[]
-  GroupMembers     GroupMembers[]
-  GroupPosts       GroupPosts[]
-  Notifications    Notifications[]
-  Messages         Messages[]
-  sentMessages     Messages[]      @relation("MessageSender")
-  receivedMessages Messages[]      @relation("MessageReceiver")
-  actionTickets    ActionTickets[]
-  Profiles         Profiles[]
+  posts            Post[]
+  comments         Comment[]
+  likes            Like[]
+  followers        Follower[]     @relation("UserFollowers")
+  following        Follower[]     @relation("UserFollowing")
+  friends          Friend[]       @relation("UserFriends")
+  friendOf         Friend[]       @relation("UserFriendsFriend")
+  groups           Group[]
+  groupMembers     GroupMember[]
+  groupPosts       GroupPost[]
+  notifications    Notification[]
+  messages         Message[]
+  sentMessages     Message[]      @relation("MessageSender")
+  receivedMessages Message[]      @relation("MessageReceiver")
+  actionTickets    ActionTicket[]
+  profile          Profile?
 }
 
-model Profiles {
+model Profile {
   id             String  @id @default(auto()) @map("_id") @db.ObjectId
-  user           Users   @relation(fields: [userId], references: [id])
-  userId         String  @db.ObjectId
+  userId         String  @unique @db.ObjectId
   name           String
   gender         String
   profilePicture String?
   bio            String?
+  user           User    @relation(fields: [userId], references: [id])
 }
 
-model Posts {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+model Post {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   content   String
-  createdAt DateTime   @default(now())
-  author    Users      @relation(fields: [authorId], references: [id])
-  authorId  String     @db.ObjectId
-  comments  Comments[]
-  likes     Likes[]
+  createdAt DateTime  @default(now())
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String    @db.ObjectId
+  comments  Comment[]
+  likes     Like[]
 }
 
-model Comments {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  content      String
-  createdAt    DateTime    @default(now())
-  author       Users       @relation(fields: [authorId], references: [id])
-  authorId     String      @db.ObjectId
-  post         Posts       @relation(fields: [postId], references: [id])
-  postId       String      @db.ObjectId
-  GroupPosts   GroupPosts? @relation(fields: [groupPostsId], references: [id])
-  groupPostsId String?     @db.ObjectId
+model Comment {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  content     String
+  createdAt   DateTime   @default(now())
+  author      User       @relation(fields: [authorId], references: [id])
+  authorId    String     @db.ObjectId
+  post        Post       @relation(fields: [postId], references: [id])
+  postId      String     @db.ObjectId
+  groupPost   GroupPost? @relation(fields: [groupPostId], references: [id])
+  groupPostId String?    @db.ObjectId
 }
 
-model Likes {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  user         Users       @relation(fields: [userId], references: [id])
-  userId       String      @db.ObjectId
-  post         Posts       @relation(fields: [postId], references: [id])
-  postId       String      @db.ObjectId
-  GroupPosts   GroupPosts? @relation(fields: [groupPostsId], references: [id])
-  groupPostsId String?     @db.ObjectId
+model Like {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String     @db.ObjectId
+  post        Post       @relation(fields: [postId], references: [id])
+  postId      String     @db.ObjectId
+  groupPost   GroupPost? @relation(fields: [groupPostId], references: [id])
+  groupPostId String?    @db.ObjectId
 }
 
-model Followers {
+model Follower {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
-  follower    Users  @relation("UserFollowers", fields: [followerId], references: [id])
+  follower    User   @relation("UserFollowers", fields: [followerId], references: [id])
   followerId  String @db.ObjectId
-  following   Users  @relation("UserFollowing", fields: [followingId], references: [id])
+  following   User   @relation("UserFollowing", fields: [followingId], references: [id])
   followingId String @db.ObjectId
 }
 
-model Friends {
+model Friend {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  user      Users    @relation("UserFriends", fields: [userId], references: [id])
+  user      User     @relation("UserFriends", fields: [userId], references: [id])
   userId    String   @db.ObjectId
-  friend    Users    @relation("UserFriendsFriend", fields: [friendId], references: [id])
+  friend    User     @relation("UserFriendsFriend", fields: [friendId], references: [id])
   friendId  String   @db.ObjectId
   createdAt DateTime @default(now())
-  Users     Users?   @relation(fields: [usersId], references: [id])
-  usersId   String?  @db.ObjectId
 }
 
-model Groups {
-  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+model Group {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String?
-  createdAt   DateTime       @default(now())
-  owner       Users          @relation(fields: [ownerId], references: [id])
-  ownerId     String         @db.ObjectId
-  members     GroupMembers[]
-  posts       GroupPosts[]
-  Messages    Messages[]
+  createdAt   DateTime      @default(now())
+  owner       User          @relation(fields: [ownerId], references: [id])
+  ownerId     String        @db.ObjectId
+  members     GroupMember[]
+  posts       GroupPost[]
+  messages    Message[]
 }
 
-model GroupMembers {
+model GroupMember {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  group    Groups   @relation(fields: [groupId], references: [id])
+  group    Group    @relation(fields: [groupId], references: [id])
   groupId  String   @db.ObjectId
-  user     Users    @relation(fields: [userId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
   userId   String   @db.ObjectId
   role     String // 'admin', 'member'
   joinedAt DateTime @default(now())
 }
 
-model GroupPosts {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+model GroupPost {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   content   String
-  createdAt DateTime   @default(now())
-  group     Groups     @relation(fields: [groupId], references: [id])
-  groupId   String     @db.ObjectId
-  author    Users      @relation(fields: [authorId], references: [id])
-  authorId  String     @db.ObjectId
-  comments  Comments[]
-  likes     Likes[]
+  createdAt DateTime  @default(now())
+  group     Group     @relation(fields: [groupId], references: [id])
+  groupId   String    @db.ObjectId
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String    @db.ObjectId
+  comments  Comment[]
+  likes     Like[]
 }
 
-model Notifications {
+model Notification {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   type      String // 'like', 'comment', 'follow', 'friend_request'
   message   String
   read      Boolean  @default(false) // trạng thái thông báo đã đọc/chưa đọc
-  user      Users    @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
   userId    String   @db.ObjectId
   createdAt DateTime @default(now())
 }
 
-model Messages {
+model Message {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   content    String
-  sender     Users    @relation("MessageSender", fields: [senderId], references: [id])
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id])
   senderId   String   @db.ObjectId
-  receiver   Users?   @relation("MessageReceiver", fields: [receiverId], references: [id]) // cá nhân
+  receiver   User?    @relation("MessageReceiver", fields: [receiverId], references: [id]) // cá nhân
   receiverId String?  @db.ObjectId
-  group      Groups?  @relation(fields: [groupId], references: [id]) // nhóm chat
+  group      Group?   @relation(fields: [groupId], references: [id]) // nhóm chat
   groupId    String?  @db.ObjectId
   sentAt     DateTime @default(now())
-  Users      Users?   @relation(fields: [usersId], references: [id])
-  usersId    String?  @db.ObjectId
+  User       User?    @relation(fields: [userId], references: [id])
+  userId     String?  @db.ObjectId
 }
 
-model VerificationCodes {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  email      String
-  code       String
-  expires_at DateTime
+model VerificationCode {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  code      String
+  expiresAt DateTime
 }
 
-model ActionTickets {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  Users      Users?   @relation(fields: [usersId], references: [id])
-  usersId    String?  @db.ObjectId
-  ticket     String
-  action     String
-  expires_at DateTime
+model ActionTicket {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @db.ObjectId
+  ticket    String
+  action    String
+  expiresAt DateTime
+}
+
+model RefreshToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  token     String
+  expiredAt DateTime
 }

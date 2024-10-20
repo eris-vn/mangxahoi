@@ -1,78 +1,98 @@
+import type { ApiResponse } from "@/types/api";
 import { defineStore } from "pinia";
 
 export const useAuth = defineStore("auth", () => {
-  const token = useCookie("token", { maxAge: 30 * 24 * 60 * 60 });
+  const accessToken = useCookie("accessToken", { maxAge: 30 * 24 * 60 * 60 });
+  const refreshToken = useCookie("refreshToken", { maxAge: 30 * 24 * 60 * 60 });
   const user = ref();
 
   async function getUser() {
-    if (token.value) {
-      let { data } = await useApi<{
-        status: number;
-        data: {
+    if (accessToken.value) {
+      const { data } = await useApi<
+        ApiResponse<{
           user: {
             name: string;
             money: string;
           };
-        };
-      }>("/api/user/me", {
-        method: "POST",
-      });
-
-      if (data.value?.status == 200) {
-        user.value = data.value?.data.user;
-      } else if (data.value?.status == 401) {
-        signOut();
-      }
-    }
-    return "";
-  }
-
-  async function signIn(username: string, password: string, captcha: any) {
-    return new Promise(async (resolve, reject) => {
-      let { data: requests } = await useApi<{
-        status: number;
-        data: {
-          token: string;
-        };
-        msg: string;
-      }>(`/api/auth/login`, {
-        body: {
-          username,
-          password,
-          captcha,
+        }>
+      >("/user", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken.value}`,
         },
       });
 
-      if (requests.value?.status == 200) {
-        token.value = requests.value.data.token;
-
-        getUser();
-        resolve(`${requests.value.msg}` || "Lấy dữ liệu thất bại");
-      } else {
-        reject(`${requests.value?.msg}` || "Lấy dữ liệu thất bại");
+      if (data.value?.code == 200) {
+        user.value = data.value.data;
+      } else if (data.value?.code == 401) {
+        await refreshTokens();
       }
-    });
+    }
   }
 
-  async function setToken(t: string) {
-    token.value = t;
+  async function refreshTokens() {
+    if (!refreshToken.value) {
+      signOut();
+      return;
+    }
+
+    const { data } = await useApi<
+      ApiResponse<{
+        access_token: string;
+        refresh_token: string;
+      }>
+    >("/auth/refresh", {
+      method: "POST",
+      body: {
+        token: refreshToken.value,
+      },
+    });
+
+    if (data.value?.code == 200) {
+      accessToken.value = data.value.data.access_token;
+      refreshToken.value = data.value.data.refresh_token;
+      await getUser();
+    } else {
+      signOut();
+    }
+  }
+
+  async function setTokens(access: string, refresh: string) {
+    accessToken.value = access;
+    refreshToken.value = refresh;
     await getUser();
   }
 
   async function signOut() {
-    await useApi("/api/user/logout", {
+    console.log("test");
+
+    await useApi("/auth/logout", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token.value}`,
+        Authorization: `Bearer ${accessToken.value}`,
       },
     });
-    token.value = null;
+    accessToken.value = null;
+    refreshToken.value = null;
     user.value = null;
+    navigateTo({ path: "/login" });
   }
 
-  function getToken() {
-    return token.value;
+  function getAccessToken() {
+    return accessToken.value;
   }
 
-  return { user, signIn, signOut, setToken, getUser, getToken };
+  function getRefreshToken() {
+    return refreshToken.value;
+  }
+
+  return {
+    user,
+    signOut,
+    setTokens,
+    getUser,
+    getAccessToken,
+    getRefreshToken,
+    refreshTokens,
+  };
 });

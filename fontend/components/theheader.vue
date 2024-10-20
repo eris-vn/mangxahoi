@@ -139,7 +139,11 @@
         v-model="isVisibleLogin"
         @show-register="isVisibleRegister = true"
       ></Login>
-      <Register v-model="isVisibleRegister"></Register>
+      <Register
+        v-model="isVisibleRegister"
+        @show-login="isVisibleLogin = true"
+      ></Register>
+      <CreateProfile></CreateProfile>
     </header>
   </div>
 </template>

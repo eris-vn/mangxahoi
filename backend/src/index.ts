@@ -8,7 +8,8 @@ app.use("/*", cors());
 import authController from "./controllers/auth";
 app.route("/auth", authController);
 
-app.get("/", (c) => c.text("Hello Bun!!!!"));
+import userController from "./controllers/user";
+app.route("/user", userController);
 
 // Xử lý validate
 
