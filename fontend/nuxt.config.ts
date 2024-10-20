@@ -3,14 +3,28 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern-compiler",
+        },
+      },
+    },
+  },
   modules: [
     "@primevue/nuxt-module",
     "@nuxt/icon",
     "@nuxt/fonts",
     "nuxt-vue3-google-signin",
+    "@pinia/nuxt",
+    "@vee-validate/nuxt",
   ],
   primevue: {
     importTheme: { from: "@/themes/main.js" },
+    composables: {
+      exclude: ["useToast"],
+    },
   },
   googleSignIn: {
     clientId:
@@ -20,15 +34,6 @@ export default defineNuxtConfig({
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
-    },
-  },
-  vite: {
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: "modern-compiler",
-        },
-      },
     },
   },
 });

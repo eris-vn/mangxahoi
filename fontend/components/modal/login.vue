@@ -7,35 +7,41 @@
       header="Đăng nhập"
       :style="{ width: '32rem' }"
     >
-      <!-- Email -->
-      <InputText
-        v-model="formData.email"
-        id="email"
-        class="w-full mb-2"
-        placeholder="Email hoặc số điện thoại"
-      />
-      <span v-if="errors.email" class="text-red-500">{{ errors.email }}</span>
+      <Form @submit="handleLogin" :validation-schema="schema">
+        <!-- Email -->
+        <div class="mb-4">
+          <Field
+            v-model="formData.email"
+            name="email"
+            placeholder="Email"
+            class="w-full border border-gray-300 rounded-md p-2 px-3 outline-none shadow-sm focus:border-gray-500 transition duration-300 ease-in-out"
+          />
+          <ErrorMessage name="email" class="block mt-1 text-red-500" />
+        </div>
 
-      <!-- Mật khẩu -->
-      <InputText
-        v-model="formData.password"
-        id="password"
-        class="w-full mb-2"
-        type="password"
-        placeholder="Mật khẩu"
-      />
-      <span v-if="errors.password" class="text-red-500">{{ errors.password }}</span>
+        <!-- Mật khẩu -->
+        <div class="mb-4">
+          <Field
+            type="password"
+            v-model="formData.password"
+            name="password"
+            placeholder="Mật khẩu"
+            class="w-full border border-gray-300 rounded-md p-2 px-3 outline-none shadow-sm focus:border-gray-500 transition duration-300 ease-in-out"
+          />
+          <ErrorMessage name="password" class="block mt-1 text-red-500" />
+        </div>
 
-      <!-- Quên mật khẩu -->
-      <div
-        class="text-end mb-4 text-blue-600 cursor-pointer"
-        @click="switchToForgetPass()"
-      >
-        Quên mật khẩu?
-      </div>
+        <!-- Quên mật khẩu -->
+        <div
+          class="text-end mb-4 text-blue-600 cursor-pointer"
+          @click="switchToForgetPass()"
+        >
+          Quên mật khẩu?
+        </div>
 
-      <!-- Nút đăng nhập -->
-      <Button label="Đăng nhập" class="w-full" @click="handleLogin"></Button>
+        <!-- Nút đăng nhập -->
+        <Button label="Đăng nhập" class="w-full" @click="handleLogin"></Button>
+      </Form>
 
       <Divider align="center" type="dotted"> hoặc đăng nhập bằng </Divider>
 
@@ -73,25 +79,35 @@
 </template>
 
 <script setup lang="ts">
-//------------------- login with google---------------------------------//
+import * as yup from "yup";
 import {
   useCodeClient,
   type ImplicitFlowSuccessResponse,
   type ImplicitFlowErrorResponse,
 } from "vue3-google-signin";
+import type { ApiResponse } from "~/types/api";
+
+const toast = useToast();
+const auth = useAuth();
+
+const schema = yup.object({
+  email: yup
+    .string()
+    .email("Email chưa đúng định dạng.")
+    .required("Email không được bỏ trống"),
+  password: yup
+    .string()
+    .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
+    .required("Mật khẩu không được bỏ trống"),
+});
 
 const handleOnSuccess = async (response: ImplicitFlowSuccessResponse) => {
-  // send code to a backend server to verify it.
-  console.log("Code: ", response.code);
-
-  const result = await fetch("http://localhost:4000/auth/verify/code", {
+  const { data: result } = await useApi("/auth/verify/code", {
     method: "POST",
     body: JSON.stringify({
       code: response.code,
     }),
   });
-  const json = await result.json();
-  console.log(json);
 };
 const handleOnError = (errorResponse: ImplicitFlowErrorResponse) => {
   console.log("Error: ", errorResponse);
@@ -100,52 +116,37 @@ const handleOnError = (errorResponse: ImplicitFlowErrorResponse) => {
 const { isReady, login } = useCodeClient({
   onSuccess: handleOnSuccess,
   onError: handleOnError,
-  // other options
 });
 //------------------- end login with google---------------------------------//
 
 // State form data và lỗi
-const formData = ref({
-  email: '',
-  password: ''
+const formData = reactive({
+  email: "",
+  password: "",
 });
 
-const errors = ref({
-  email: '',
-  password: ''
-});
-
-// Hàm đăng nhập
+// Xử lý đăng nhập
 async function handleLogin() {
-  // Reset lỗi
-  errors.value = {
-    email: '',
-    password: ''
-  };
-
-  // Kiểm tra hợp lệ
-  if (!formData.value.email) {
-    errors.value.email = 'Email không được để trống';
-  }
-  if (!formData.value.password) {
-    errors.value.password = 'Mật khẩu không được để trống';
-  }
-
-  // Nếu có lỗi, dừng lại
-  if (Object.values(errors.value).some((error) => error)) {
-    return;
-  }
-
-  // Gửi dữ liệu nếu không có lỗi
-  const response = await fetch('http://localhost:4000/auth/login', {
+  const { data: response } = await useApi<
+    ApiResponse<{
+      access_token: string;
+      refresh_token: string;
+    }>
+  >("/auth/login", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData.value)
+    body: formData,
+    watch: false,
   });
-  const json = await response.json();
-  console.log(json);
+
+  if (response.value?.code == 200) {
+    auth.setTokens(
+      response.value.data.access_token,
+      response.value.data.refresh_token
+    );
+    toast.success(response.value.message);
+  } else {
+    toast.error(response.value?.message ?? "Lấy dữ liệu thất bại");
+  }
 }
 
 // Xử lý chuyển đổi các modal

@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen overflow-hidden">
     <!-- Header -->
-    <Theheader></Theheader>
+    <TheHeader></TheHeader>
 
     <!-- Main content wrapper -->
     <div class="flex flex-1 pt-[60px] overflow-hidden">
@@ -127,7 +127,7 @@
                 <ul>
                   <li class="mb-1">
                     <NuxtLink
-                      href="#"
+                      to="/groups/nuxtjs"
                       class="group flex gap-4 items-center py-2 px-4 rounded hover:bg-gray-200"
                     >
                       <div>
@@ -142,7 +142,7 @@
                   </li>
                   <li class="mb-1">
                     <NuxtLink
-                      href="#"
+                      to="/groups/nextjs"
                       class="group flex gap-4 items-center py-2 px-4 rounded hover:bg-gray-200"
                     >
                       <div>
@@ -173,10 +173,12 @@
       id="overlay"
       class="hidden fixed inset-0 bg-black opacity-50 z-30"
     ></div>
+
+    <CreatePosts></CreatePosts>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: "DefaultLayout",
 };
